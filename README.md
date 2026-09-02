@@ -4,9 +4,12 @@ A clean Flutter weather dashboard with city search, explicit loading and error s
 
 ## App Preview
 
-The screenshot below was captured from the running app on an iPhone 17 Pro Max simulator.
+These screenshots were provided from the running app on an iPhone 17 Pro Max simulator.
 
-![Skyline Weather overview](assets/screenshots/weather-overview.png)
+| Alexandria | Cairo search result |
+| --- | --- |
+| ![Alexandria weather](assets/screenshots/alexandria-weather.png) | ![Cairo weather](assets/screenshots/cairo-weather.png) |
+
 ## Features
 
 - Loads Alexandria weather on startup.
@@ -63,7 +66,8 @@ test/
 └── widget_test.dart
 assets/
 └── screenshots/
-    └── weather-overview.png
+  ├── alexandria-weather.png
+  └── cairo-weather.png
 ```
 
 ## Data Source
