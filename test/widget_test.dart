@@ -1,30 +1,36 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
 import 'package:flutter/material.dart';
 import 'package:flutter_test/flutter_test.dart';
-
+import 'package:weather_app/data/weather_repository.dart';
 import 'package:weather_app/main.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('loads and searches for a city', (tester) async {
+    await tester.pumpWidget(const WeatherApp());
+    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('Alexandria'), findsOneWidget);
+    await tester.enterText(find.byType(TextField), 'Cairo');
+    await tester.tap(find.byTooltip('Search'));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('Cairo'), findsOneWidget);
+  });
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+  testWidgets('shows a friendly message for unknown city', (tester) async {
+    await tester.pumpWidget(const WeatherApp());
+    await tester.pump(const Duration(milliseconds: 500));
+    await tester.enterText(find.byType(TextField), 'Atlantis');
+    await tester.tap(find.byTooltip('Search'));
+    await tester.pump(const Duration(milliseconds: 500));
+    expect(find.text('Could not load weather'), findsOneWidget);
+    expect(find.textContaining('could not find that city'), findsOneWidget);
+  });
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
-
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+  test('repository reports offline and empty states', () async {
+    final repository = WeatherRepository();
+    expect(
+      repository.fetchWeather('offline'),
+      throwsA(isA<WeatherException>()),
+    );
+    expect(repository.fetchWeather(''), throwsA(isA<WeatherException>()));
   });
 }
